@@ -143,7 +143,7 @@ export default function MotivesDashboard() {
 
   return (
     <>
-      <div className="mt-2" ref={myRef}>{renderedMotives}</div>
+      <div className="pt-2" ref={myRef}>{renderedMotives}</div>
       <AddMotiveBar
         displayCopy={motives.length !== 0}
         onAddMotive={onAddMotive}
