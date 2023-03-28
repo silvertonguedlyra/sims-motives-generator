@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { SetStateAction, useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { nanoid } from "nanoid";
 import { toBlob } from "html-to-image";
@@ -56,7 +56,12 @@ interface MotiveProps {
     name: string;
 }
 
-function Motive({name}: MotiveProps) {
+interface Motive {
+    id: string;
+    name: string;
+}
+
+function MotiveElement({name}: MotiveProps) {
 return (
     <div className="form-group row">
     <label className="col-2 col-form-label align-self-center">{name}</label>
@@ -67,14 +72,10 @@ return (
 );
 }
 
-interface SliderProps {
-    initialPercent: number;
-}
-
-function Slider({ initialPercent }: SliderProps) {
+function Slider() {
   const [percent, setPercent] = useState(50);
 
-  function handleOnChange(e) {
+  function handleOnChange(e: { target: { value: SetStateAction<number>; }; }) {
     setPercent(e.target.value);
   }
 
@@ -96,12 +97,12 @@ function Slider({ initialPercent }: SliderProps) {
 }
 
 export default function MotivesDashboard() {
-    const [motives, setMotives] = useState([]); // list of str
+    const [motives, setMotives] = useState<Array<Motive>>([]); 
     const myRef = useRef(null);
     const [showingCopiedToast, setShowingCopiedToast ] = useState(false);
     
-    const renderedMotives = motives.map((motive) => {
-      return <Motive key={motive.id} name={motive.name} />
+    const renderedMotives = motives.map((motive: Motive) => {
+      return <MotiveElement key={motive.id} name={motive.name} />
     });
 
     useEffect(() => {
@@ -115,7 +116,7 @@ export default function MotivesDashboard() {
     }, []);
 
     
-    function onAddMotive(name) {
+    function onAddMotive(name: string) {
       setMotives([
         ...motives,
         {id: nanoid(), name: name}
@@ -123,20 +124,26 @@ export default function MotivesDashboard() {
     }
     
     function copyToClipboard() {
+      if (!myRef.current) {
+        return;
+      }
       toBlob(myRef.current)
         .then((blob) => {
+          if (!blob) {
+            return;
+          }
           return navigator.clipboard.write([
             new ClipboardItem({
-              [blob.type] : blob,
-            })
+              [blob.type]: blob,
+            }),
           ]);
         })
         .then(() => {
           Cookies.set("motives", JSON.stringify(motives), { expires: 365 });
           setShowingCopiedToast(true);
-      });
+        });
     }
-    
+
     function clearMotives() {
       Cookies.remove("motives");
       setMotives([]);
