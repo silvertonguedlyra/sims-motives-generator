@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect, useRef, useState } from "react";
+import { ChangeEvent, KeyboardEvent, SetStateAction, useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { nanoid } from "nanoid";
 import { toBlob } from "html-to-image";
@@ -15,11 +15,11 @@ interface AddMotiveBarProps {
 function AddMotiveBar({displayCopy, onAddMotive, onCopyToClipboard, onClear}: AddMotiveBarProps) {
     const [name, setName] = useState("");
     
-    function handleOnChange(e) {
+    function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
       setName(e.target.value);
     }
     
-    function handleOnKeyDown(e) {
+    function handleOnKeyDown(e: KeyboardEvent) {
       if (e.key === "Enter") {
         addMotive();
       }
