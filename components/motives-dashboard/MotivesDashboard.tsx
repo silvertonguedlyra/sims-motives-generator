@@ -2,8 +2,8 @@ import { ChangeEvent, KeyboardEvent, SetStateAction, useEffect, useRef, useState
 import Cookies from "js-cookie";
 import { nanoid } from "nanoid";
 import { toBlob } from "html-to-image";
-
-import styles from "./MotivesDashboard.module.css";
+import { ToastContainer, toast } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 interface AddMotiveBarProps {
     displayCopy: boolean;
@@ -97,73 +97,78 @@ function Slider() {
 }
 
 export default function MotivesDashboard() {
-    const [motives, setMotives] = useState<Array<Motive>>([]); 
-    const myRef = useRef(null);
-    const [showingCopiedToast, setShowingCopiedToast ] = useState(false);
-    
-    const renderedMotives = motives.map((motive: Motive) => {
-      return <MotiveElement key={motive.id} name={motive.name} />
-    });
+  const [motives, setMotives] = useState<Array<Motive>>([]);
+  const myRef = useRef(null);
 
-    useEffect(() => {
-      import("toolcool-range-slider");
-      let motives = Cookies.get("motives");
-      if (motives === undefined) {
-        setMotives([]);
-        return;
-      }
-      setMotives(JSON.parse(motives));
-    }, []);
+  const renderedMotives = motives.map((motive: Motive) => {
+    return <MotiveElement key={motive.id} name={motive.name} />;
+  });
 
-    
-    function onAddMotive(name: string) {
-      setMotives([
-        ...motives,
-        {id: nanoid(), name: name}
-      ]);
-    }
-    
-    function copyToClipboard() {
-      if (!myRef.current) {
-        return;
-      }
-      toBlob(myRef.current)
-        .then((blob) => {
-          if (!blob) {
-            return;
-          }
-          return navigator.clipboard.write([
-            new ClipboardItem({
-              [blob.type]: blob,
-            }),
-          ]);
-        })
-        .then(() => {
-          Cookies.set("motives", JSON.stringify(motives), { expires: 365 });
-          setShowingCopiedToast(true);
-        });
-    }
+  useEffect(() => {
+    import("toolcool-range-slider");
+  });
 
-    function clearMotives() {
-      Cookies.remove("motives");
+  useEffect(() => {
+    let motives = Cookies.get("motives");
+    if (motives === undefined) {
       setMotives([]);
+      return;
     }
-    
-    return (
-      <>
-        <div ref={myRef}>{renderedMotives}</div>
-        <AddMotiveBar
-          displayCopy={motives.length !== 0}
-          onAddMotive={onAddMotive}
-          onCopyToClipboard={copyToClipboard}
-          onClear={clearMotives}
-        />
-        <div
-          className={`${showingCopiedToast ? styles["toast-shown"] : styles["toast-hidden"]}`}
-          onTransitionEnd={(e) => setShowingCopiedToast(false)}
-        >
-          <strong>Copied and saved!</strong>
-        </div>
-      </>
-    );
+    setMotives(JSON.parse(motives));
+  }, []);
+
+  function onAddMotive(name: string) {
+    setMotives([...motives, { id: nanoid(), name: name }]);
+  }
+
+  function copyToClipboard() {
+    if (!myRef.current) {
+      return;
+    }
+    toBlob(myRef.current)
+      .then((blob) => {
+        if (!blob) {
+          return;
+        }
+        return navigator.clipboard.write([
+          new ClipboardItem({
+            [blob.type]: blob,
+          }),
+        ]);
+      })
+      .then(() => {
+        Cookies.set("motives", JSON.stringify(motives), { expires: 365 });
+        toast("Copied to clipboard!", {
+            type: "success",
+            hideProgressBar: true,
+            pauseOnHover: false,
+            autoClose: 1000,
+        });
+      }, () => {
+        toast("Failed to copy! Check your copy permissions", {
+            type: "error",
+            hideProgressBar: true,
+            pauseOnHover: false,
+            autoClose: 3000,
+        });
+      });
+  }
+
+  function clearMotives() {
+    Cookies.remove("motives");
+    setMotives([]);
+  }
+
+  return (
+    <>
+      <div ref={myRef}>{renderedMotives}</div>
+      <AddMotiveBar
+        displayCopy={motives.length !== 0}
+        onAddMotive={onAddMotive}
+        onCopyToClipboard={copyToClipboard}
+        onClear={clearMotives}
+      />
+      <ToastContainer />
+    </>
+  );
 }
