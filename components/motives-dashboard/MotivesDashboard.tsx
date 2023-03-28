@@ -4,6 +4,8 @@ import { nanoid } from "nanoid";
 import { toBlob } from "html-to-image";
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import Slider from 'rc-slider';
+import "rc-slider/assets/index.css";
 
 interface AddMotiveBarProps {
     displayCopy: boolean;
@@ -71,14 +73,9 @@ function MotiveElement({name}: MotiveProps) {
   return (
     <div className="mb-3">
       <label className="form-label align-self-center">{name}</label>
-      <input className="form-range" type="range" value={percent} onChange={handleOnChange} />
+      <Slider defaultValue={50} />
     </div>
   );
-}
-
-function Slider() {
-  const [percent, setPercent] = useState(50);
-
 }
 
 export default function MotivesDashboard() {
