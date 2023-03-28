@@ -134,7 +134,7 @@ export default function MotivesDashboard() {
       "image/png": toBlob(myRef.current).then((blob) => {
         console.log(blob);
         if (!blob) {
-          toast("Failed to copy! Check your copy permissions", {
+          toast("Failed to copy :(", {
             type: "error",
             hideProgressBar: true,
             pauseOnHover: false,
@@ -154,38 +154,6 @@ export default function MotivesDashboard() {
     });
     navigator.clipboard.write([clipboardItem]);
   }
-//   function copyToClipboard() {
-//     if (!myRef.current) {
-//       return;
-//     }
-//     toBlob(myRef.current)
-//       .then((blob) => {
-//         if (!blob) {
-//           return;
-//         }
-//         return navigator.clipboard.write([
-//           new ClipboardItem({
-//             [blob.type]: blob,
-//           }),
-//         ]);
-//       })
-//       .then(() => {
-//         Cookies.set("motives", JSON.stringify(motives), { expires: 365 });
-//         toast("Copied to clipboard!", {
-//             type: "success",
-//             hideProgressBar: true,
-//             pauseOnHover: false,
-//             autoClose: 1000,
-//         });
-//       }, () => {
-//         toast("Failed to copy! Check your copy permissions", {
-//             type: "error",
-//             hideProgressBar: true,
-//             pauseOnHover: false,
-//             autoClose: 3000,
-//         });
-//       });
-//   }
 
   function clearMotives() {
     Cookies.remove("motives");
