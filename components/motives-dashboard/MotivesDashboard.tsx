@@ -1,4 +1,4 @@
-import { ChangeEvent, KeyboardEvent, SetStateAction, useEffect, useRef, useState } from "react";
+import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import Cookies from "js-cookie";
 import { nanoid } from "nanoid";
 import { toBlob } from "html-to-image";
@@ -62,38 +62,23 @@ interface Motive {
 }
 
 function MotiveElement({name}: MotiveProps) {
-return (
-    <div className="form-group row">
-    <label className="col-2 col-form-label align-self-center">{name}</label>
-    <div className="col-10 align-self-center">
-        <Slider />
+    const [percent, setPercent] = useState(50);
+
+  function handleOnChange(e: ChangeEvent<HTMLInputElement>) {
+    setPercent(e.target.valueAsNumber);
+  }
+
+  return (
+    <div className="mb-3">
+      <label className="form-label align-self-center">{name}</label>
+      <input className="form-range" type="range" value={percent} onChange={handleOnChange} />
     </div>
-    </div>
-);
+  );
 }
 
 function Slider() {
   const [percent, setPercent] = useState(50);
 
-  function handleOnChange(e: { target: { value: SetStateAction<number>; }; }) {
-    setPercent(e.target.value);
-  }
-
-  return (
-    <tc-range-slider
-      pointer-bg="#fff"
-      pointer-bg-focus="#fff"
-      pointer-bg-hover="#fff"
-      pointer-border="1px solid hsla(0, 0%, 88%, 0.5)"
-      pointer-border-hover="1px solid hsla(0, 0%, 88%, 0.5)"
-      pointer-border-focus="1px solid hsla(0, 0%, 88%, 0.5)"
-      pointer-shadow="0 0 2px rgba(0, 0, 0, 0.8)"
-      pointer-shadow-hover="0 0 2px rgba(0, 0, 0, 0.8)"
-      pointer-shadow-focus="0 0 2px rgba(0, 0, 0, 0.8)"
-      value={percent}
-      onChange={handleOnChange}
-    />
-  );
 }
 
 export default function MotivesDashboard() {

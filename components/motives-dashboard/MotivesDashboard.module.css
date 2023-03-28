@@ -1,8 +1,0 @@
-.toast-shown {
-    transition: all 1ms linear;
-}
-  
-.toast-hidden {
-    opacity: 0;
-    transition: all 250ms linear 1s;
-}
