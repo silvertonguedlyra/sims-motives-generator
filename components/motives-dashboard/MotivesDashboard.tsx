@@ -114,7 +114,6 @@ export default function MotivesDashboard() {
     }
     const clipboardItem = new ClipboardItem({
       "image/png": toBlob(myRef.current).then((blob) => {
-        console.log(blob);
         if (!blob) {
           toast("Failed to copy :(", {
             type: "error",
@@ -144,7 +143,7 @@ export default function MotivesDashboard() {
 
   return (
     <>
-      <div ref={myRef}>{renderedMotives}</div>
+      <div className="mt-2" ref={myRef}>{renderedMotives}</div>
       <AddMotiveBar
         displayCopy={motives.length !== 0}
         onAddMotive={onAddMotive}
